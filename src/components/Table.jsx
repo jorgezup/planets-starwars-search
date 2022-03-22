@@ -24,7 +24,7 @@ const Table = () => {
       </thead>
       <tbody>
         {
-          planets?.map((planet) => (
+          planets.map((planet) => (
             <tr key={ planet.name }>
               <td>{planet.name}</td>
               <td>{planet.rotation_period}</td>
