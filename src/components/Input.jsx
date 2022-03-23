@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 const Input = (props) => {
   const { name, label } = props;
   return (
-    <label htmlFor={ label }>
-      {name}
+    <label htmlFor={ name }>
+      {label}
       <input { ...props } />
     </label>
   );
