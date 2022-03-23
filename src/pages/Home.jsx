@@ -10,31 +10,38 @@ const Table = React.lazy(() => import('../components/Table'));
 const Input = React.lazy(() => import('../components/Input'));
 
 const Home = () => {
-  const { setPlanets, setFilters } = useContext(Context);
+  const { setPlanets, filters, setFilters } = useContext(Context);
   const [state, setState] = useState({
-    nameFilter: '',
-    columnFilter: '',
-    comparisonFilter: '',
-    valueFilter: 0,
+    column: 'maior que',
+    comparison: 'population',
+    value: 0,
   });
-
   useEffect(() => {
     async function fetchData() {
-      const planets = await getPlanets();
-      setPlanets(planets);
+      const planetsData = await getPlanets();
+      setPlanets(planetsData);
     }
     fetchData();
   }, [setPlanets]);
+
+  const handleChangeInput = ({ target: { name, value } }) => {
+    setFilters((prevState) => ({ ...prevState, [name]: value }));
+  };
 
   const handleChange = ({ target: { name, value } }) => {
     setState((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  useEffect(() => {
-    setFilters((prevState) => ({ ...prevState, state }));
-  }, [setFilters, state]);
+  const handleSearch = () => {
+    setFilters((prevState) => ({ ...prevState, filterBy: { ...state } }));
+  };
 
-  const { nameFilter, columnFilter, comparisonFilter, valueFilter } = state;
+  const { column, comparison, value } = state;
+  const { nameFilter } = filters;
+
+  // useEffect(() => {
+  //   setFilters((prevState) => ({ ...prevState, filters }));
+  // }, [filters, setFilters]);
 
   return (
     <Suspense fallback={ <Loading /> }>
@@ -44,33 +51,33 @@ const Home = () => {
         type="text"
         data-testid="name-filter"
         value={ nameFilter }
-        onChange={ handleChange }
+        onChange={ handleChangeInput }
       />
       <Select
         label="Column"
-        name="columnFilter"
+        name="column"
         data-testid="column-filter"
         options={ COLUMN_FILTER }
-        value={ columnFilter }
+        value={ column }
         onChange={ handleChange }
       />
       <Select
         label="Operator"
-        name="comparisonFilter"
+        name="comparison"
         data-testid="comparison-filter"
         options={ COMPARISON_FILTER }
-        value={ comparisonFilter }
+        value={ comparison }
         onChange={ handleChange }
       />
       <Input
         // label="Value"
-        name="valueFilter"
+        name="value"
         type="number"
         data-testid="value-filter"
-        value={ valueFilter }
+        value={ value }
         onChange={ handleChange }
       />
-      <Button>Search</Button>
+      <Button data-testid="button-filter" onClick={ handleSearch }>Filter</Button>
       <Table />
     </Suspense>
   );
