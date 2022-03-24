@@ -2,9 +2,15 @@ import React, { useContext } from 'react';
 import Context from '../context/context';
 
 const Table = () => {
-  const { planets, filters } = useContext(Context);
+  const {
+    planets,
+    filters,
+    isSortedClicked,
+    sortPlanets,
+  } = useContext(Context);
 
-  let filteredPlanets = planets;
+  let filteredPlanets = planets
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   if (filters.filterByName === '' && filters.filterBy.length === 0) {
     filteredPlanets = planets;
@@ -12,7 +18,8 @@ const Table = () => {
     const { filterByName, filterBy } = filters;
     if (filterByName) {
       const filtered = planets
-        .filter(({ name }) => name.toLowerCase().includes(filterByName.toLowerCase()));
+        .filter(({ name }) => name.toLowerCase()
+          .includes(filterByName.toLowerCase()));
       filteredPlanets = filtered;
     }
     if (filterBy.length > 0) {
@@ -37,6 +44,10 @@ const Table = () => {
     }
   }
 
+  if (isSortedClicked) {
+    filteredPlanets = sortPlanets(filteredPlanets);
+  }
+
   return (
     <table>
       <thead>
@@ -57,23 +68,24 @@ const Table = () => {
         </tr>
       </thead>
       <tbody>
-        {filteredPlanets.map((planet) => (
-          <tr key={ planet.name }>
-            <td>{planet.name}</td>
-            <td>{planet.rotation_period}</td>
-            <td>{planet.orbital_period}</td>
-            <td>{planet.diameter}</td>
-            <td>{planet.climate}</td>
-            <td>{planet.gravity}</td>
-            <td>{planet.terrain}</td>
-            <td>{planet.surface_water}</td>
-            <td>{planet.population}</td>
-            <td>{planet.films}</td>
-            <td>{planet.created}</td>
-            <td>{planet.edited}</td>
-            <td>{planet.url}</td>
-          </tr>
-        ))}
+        {filteredPlanets
+          .map((planet) => (
+            <tr key={ planet.name }>
+              <td data-testid="planet-name">{planet.name}</td>
+              <td>{planet.rotation_period}</td>
+              <td>{planet.orbital_period}</td>
+              <td>{planet.diameter}</td>
+              <td>{planet.climate}</td>
+              <td>{planet.gravity}</td>
+              <td>{planet.terrain}</td>
+              <td>{planet.surface_water}</td>
+              <td>{planet.population}</td>
+              <td>{planet.films}</td>
+              <td>{planet.created}</td>
+              <td>{planet.edited}</td>
+              <td>{planet.url}</td>
+            </tr>
+          ))}
       </tbody>
     </table>
   );
