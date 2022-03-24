@@ -4,31 +4,36 @@ import Context from '../context/context';
 const Table = () => {
   const { planets, filters } = useContext(Context);
 
-  const { nameFilter } = filters;
+  let filteredPlanets = planets;
 
-  let filtered = planets;
-
-  if (nameFilter) {
-    filtered = planets.filter(({ name }) => name.includes(nameFilter));
-  }
-
-  if (Object.keys(filters.filterBy).length > 0) {
-    const { column, comparison, value } = filters.filterBy;
-
-    filtered = planets.filter((planet) => planet[comparison] !== 'unknown');
-
-    if (comparison === 'maior que') {
-      filtered = planets.filter(
-        (planet) => Number(planet[column]) > Number(value),
-      );
-    } else if (comparison === 'menor que') {
-      filtered = planets.filter(
-        (planet) => Number(planet[column]) < Number(value),
-      );
-    } else if (comparison === 'igual a') {
-      filtered = planets.filter(
-        (planet) => Number(planet[column]) === Number(value),
-      );
+  if (filters.filterByName === '' && filters.filterBy.length === 0) {
+    filteredPlanets = planets;
+  } else {
+    const { filterByName, filterBy } = filters;
+    if (filterByName) {
+      const filtered = planets
+        .filter(({ name }) => name.toLowerCase().includes(filterByName.toLowerCase()));
+      filteredPlanets = filtered;
+    }
+    if (filterBy.length > 0) {
+      filterBy.forEach(({ column, comparison, value }) => {
+        if (comparison === 'maior que') {
+          const filtered = filteredPlanets.filter(
+            (planet) => Number(planet[column]) > Number(value),
+          );
+          filteredPlanets = filtered;
+        } else if (comparison === 'menor que') {
+          const filtered = filteredPlanets.filter(
+            (planet) => Number(planet[column]) < Number(value),
+          );
+          filteredPlanets = filtered;
+        } else if (comparison === 'igual a') {
+          const filtered = filteredPlanets.filter(
+            (planet) => Number(planet[column]) === Number(value),
+          );
+          filteredPlanets = filtered;
+        }
+      });
     }
   }
 
@@ -52,7 +57,7 @@ const Table = () => {
         </tr>
       </thead>
       <tbody>
-        {filtered.map((planet) => (
+        {filteredPlanets.map((planet) => (
           <tr key={ planet.name }>
             <td>{planet.name}</td>
             <td>{planet.rotation_period}</td>
