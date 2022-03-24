@@ -11,3 +11,5 @@ export const COMPARISON_FILTER = [
   'menor que',
   'igual a',
 ];
+
+export const MINUS_ONE = -1;
