@@ -6,7 +6,7 @@ import Context from './context';
 const Provider = ({ children }) => {
   const [planets, setPlanets] = useState([]);
   const [filters, setFilters] = useState({
-    nameFilter: '',
+    filterByName: '',
     filterBy: [],
   });
 
