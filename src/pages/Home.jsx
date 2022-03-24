@@ -14,6 +14,8 @@ const Home = () => {
     comparison: 'maior que',
     value: 0,
   });
+  const [unutilizedFilter, setUnutilizedFilter] = useState(COLUMN_FILTER);
+
   useEffect(() => {
     async function fetchData() {
       const planetsData = await getPlanets();
@@ -32,6 +34,9 @@ const Home = () => {
 
   const handleSearch = () => {
     const joined = filters.filterBy.concat(state);
+    const columnFiltered = unutilizedFilter.filter((item) => item !== state.column);
+    setUnutilizedFilter(columnFiltered);
+    setState((prevStaste) => ({ ...prevStaste, column: columnFiltered[0] }));
     setFilters((prevState) => ({ ...prevState, filterBy: joined }));
   };
 
@@ -51,7 +56,7 @@ const Home = () => {
         label="Column"
         name="column"
         data-testid="column-filter"
-        options={ COLUMN_FILTER }
+        options={ unutilizedFilter }
         value={ column }
         onChange={ handleChange }
       />
@@ -70,7 +75,26 @@ const Home = () => {
         value={ value }
         onChange={ handleChange }
       />
-      <Button data-testid="button-filter" onClick={ handleSearch }>Filter</Button>
+      <Button data-testid="button-filter" onClick={ handleSearch }>
+        Filter
+      </Button>
+      {filters.filterBy.length > 0 && (
+        <section>
+          <ul>
+            {filters.filterBy.map((filterItem) => {
+              console.log(filterItem.column);
+              return (
+                <li
+                  key={ filterItem.column }
+                >
+                  {`${filterItem.column} ${filterItem.comparison} ${filterItem.value}`}
+                  <Button>X</Button>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
       <Table />
     </>
   );
