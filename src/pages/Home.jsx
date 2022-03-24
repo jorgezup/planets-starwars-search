@@ -1,19 +1,17 @@
-import React, { useEffect, useContext, Suspense, useState } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import Button from '../components/Button';
-import Loading from '../components/Loading';
 import Select from '../components/Select';
 import Context from '../context/context';
 import getPlanets from '../services/api';
 import { COLUMN_FILTER, COMPARISON_FILTER } from '../utils/constants';
-
-const Table = React.lazy(() => import('../components/Table'));
-const Input = React.lazy(() => import('../components/Input'));
+import Table from '../components/Table';
+import Input from '../components/Input';
 
 const Home = () => {
   const { setPlanets, filters, setFilters } = useContext(Context);
   const [state, setState] = useState({
-    column: 'maior que',
-    comparison: 'population',
+    column: 'population',
+    comparison: 'maior que',
     value: 0,
   });
   useEffect(() => {
@@ -33,24 +31,20 @@ const Home = () => {
   };
 
   const handleSearch = () => {
-    setFilters((prevState) => ({ ...prevState, filterBy: { ...state } }));
+    const joined = filters.filterBy.concat(state);
+    setFilters((prevState) => ({ ...prevState, filterBy: joined }));
   };
 
   const { column, comparison, value } = state;
-  const { nameFilter } = filters;
-
-  // useEffect(() => {
-  //   setFilters((prevState) => ({ ...prevState, filters }));
-  // }, [filters, setFilters]);
+  const { filterByName } = filters;
 
   return (
-    <Suspense fallback={ <Loading /> }>
+    <>
       <Input
-        // label="Filter"
-        name="nameFilter"
+        name="filterByName"
         type="text"
         data-testid="name-filter"
-        value={ nameFilter }
+        value={ filterByName }
         onChange={ handleChangeInput }
       />
       <Select
@@ -70,7 +64,6 @@ const Home = () => {
         onChange={ handleChange }
       />
       <Input
-        // label="Value"
         name="value"
         type="number"
         data-testid="value-filter"
@@ -79,7 +72,7 @@ const Home = () => {
       />
       <Button data-testid="button-filter" onClick={ handleSearch }>Filter</Button>
       <Table />
-    </Suspense>
+    </>
   );
 };
 
