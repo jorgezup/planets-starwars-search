@@ -6,6 +6,7 @@ import getPlanets from '../services/api';
 import { COLUMN_FILTER, COMPARISON_FILTER } from '../utils/constants';
 import Table from '../components/Table';
 import Input from '../components/Input';
+import SortSection from '../components/SortSection';
 
 const Home = () => {
   const { setPlanets, filters, setFilters } = useContext(Context);
@@ -101,8 +102,8 @@ const Home = () => {
         onClick={ handleRemoveAllFilters }
       >
         Remove Filters
-
       </Button>
+      <SortSection />
       {filters.filterBy.length > 0 && (
         <section>
           <ul>
