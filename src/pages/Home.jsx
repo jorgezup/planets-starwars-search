@@ -40,6 +40,24 @@ const Home = () => {
     setFilters((prevState) => ({ ...prevState, filterBy: joined }));
   };
 
+  const handleRemoveFilter = (filterItem) => {
+    const joined = unutilizedFilter.concat(filterItem.column);
+    const allFilter = filters
+      .filterBy.filter((item) => item.column !== filterItem.column);
+    setUnutilizedFilter(joined);
+    setFilters({ ...filters, filterBy: allFilter });
+  };
+
+  const handleRemoveAllFilters = () => {
+    setUnutilizedFilter(COLUMN_FILTER);
+    setState({
+      column: 'population',
+      comparison: 'maior que',
+      value: 0,
+    });
+    setFilters({ filterByName: '', filterBy: [] });
+  };
+
   const { column, comparison, value } = state;
   const { filterByName } = filters;
 
@@ -78,23 +96,33 @@ const Home = () => {
       <Button data-testid="button-filter" onClick={ handleSearch }>
         Filter
       </Button>
+      <Button
+        data-testid="button-remove-filters"
+        onClick={ handleRemoveAllFilters }
+      >
+        Remove Filters
+
+      </Button>
       {filters.filterBy.length > 0 && (
         <section>
           <ul>
-            {filters.filterBy.map((filterItem) => {
-              console.log(filterItem.column);
-              return (
-                <li
-                  key={ filterItem.column }
+            {filters.filterBy.map((filterItem) => (
+              <li
+                key={ filterItem.column }
+                data-testid="filter"
+              >
+                {`${filterItem.column} ${filterItem.comparison} ${filterItem.value}`}
+                <Button
+                  onClick={ () => handleRemoveFilter(filterItem) }
                 >
-                  {`${filterItem.column} ${filterItem.comparison} ${filterItem.value}`}
-                  <Button>X</Button>
-                </li>
-              );
-            })}
+                  X
+                </Button>
+              </li>
+            ))}
           </ul>
         </section>
       )}
+
       <Table />
     </>
   );
